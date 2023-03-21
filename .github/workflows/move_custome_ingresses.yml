@@ -6,6 +6,7 @@ on:
     paths:
       - "clusters/development/postBuild.yml"
   workflow_dispatch:
+  pull_request:
   
 jobs:
   customIngresses:
@@ -19,26 +20,47 @@ jobs:
       run:
         shell: bash
 
-    outputs:
-      ACTIVE_CLUSTER: ${{ steps.getActiveCluster.outputs.active_cluster }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: CompareActiveCluster
+        run: |
+          BINARY="yq_linux_amd64"
+          VERSION="v4.2.0"
+          
+          wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
+            tar xz && mv ${BINARY} /usr/bin/yq
 
-      - name: yq
-        id: yq
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }}
+          echo "Test"
 
-      - name: get active cluster
-        id: getActiveCluster
-        run: echo "active_cluster=${{ steps.yq.outputs.result }}" >> $GITHUB_OUTPUT
+    # outputs:
+    #   ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
+
+    # strategy:
+    #   matrix:
+    #     branches: ["${{ steps.setActiveClusterOutput.outputs.active_cluster }}", "master"]
+
+    # steps:
+    #   - name: Extract branch name
+    #     run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+    #     id: extract_branch
+
+    #   - name: Checkout
+    #     uses: actions/checkout@v3
+
+    #   - name: Get active cluster
+    #     id: yq
+    #     uses: mikefarah/yq@master
+    #     with:
+    #       cmd: yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }}
+
+    #   - name: Set active cluster output
+    #     id: setActiveClusterOutput
+    #     run: echo "active_cluster=${{ steps.yq.outputs.result }}" >> $GITHUB_OUTPUT
         
         # value=$(yq r database.yml test.database)`
         # echo "radix_environment=$(ls ${{ env.path }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
   github-action-copy:
+    needs: customIngresses
     uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
-    # equinor/ops-actions/.github/workflows/build-python.yml@v6.5.0
+    with:
+      ACTIVE_CLUSTER: ${{ needs.customIngresses.outputs.ACTIVE_CLUSTER }}
