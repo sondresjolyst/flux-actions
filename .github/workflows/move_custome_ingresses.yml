@@ -5,6 +5,7 @@ on:
       - "master"
     paths:
       - "clusters/development/postBuild.yml"
+  workflow_dispatch:
   
 jobs:
   customIngresses:
