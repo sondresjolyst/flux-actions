@@ -38,7 +38,7 @@ jobs:
 
           yq --help
 
-          ACTIVE_CLUSTER=$(yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }})
+          ACTIVE_CLUSTER=$(yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' < ${{ env.postBuild }})
           BRANCH=${{ steps.extract_branch.outputs.branch }}
 
           echo "ACTIVE_CLUSTER: ${ACTIVE_CLUSTER}"
