@@ -20,4 +20,5 @@ jobs:
         uses: actions/checkout@v3
 
       - name: github-action-copy
-        run: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
+        uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
+        # equinor/ops-actions/.github/workflows/build-python.yml@v6.5.0
