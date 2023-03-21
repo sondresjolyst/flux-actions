@@ -30,7 +30,7 @@ jobs:
         id: yq
         uses: mikefarah/yq@master
         with:
-          cmd: yq 'spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }}
+          cmd: yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }}
 
       - name: get active cluster
         id: getActiveCluster
