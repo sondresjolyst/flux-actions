@@ -1,0 +1,23 @@
+name: Move Custom ingresses 
+on:
+  push:
+    branches:
+      - "master"
+    path:
+      - "clusters/development/postBuild.yml"
+  
+jobs:
+  customIngresses:
+    name: Custom ingresses
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: github-action-copy
+        run: sondresjolyst/github-action-copy
