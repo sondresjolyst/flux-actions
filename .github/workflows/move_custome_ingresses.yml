@@ -26,9 +26,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: yq
+        id: yq
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq 'spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }}
+
       - name: get active cluster
         id: getActiveCluster
-        run: echo "active_cluster=$(yq r ${{ env.postBuild }} spec.postBuild.substitute.ACTIVE_CLUSTER)" >> $GITHUB_OUTPUT
+        run: echo "active_cluster=${{ steps.yq.outputs.result }}" >> $GITHUB_OUTPUT
         
         # value=$(yq r database.yml test.database)`
         # echo "radix_environment=$(ls ${{ env.path }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
