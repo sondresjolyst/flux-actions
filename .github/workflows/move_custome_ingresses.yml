@@ -24,6 +24,9 @@ jobs:
       ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Extract branch name
         id: extract_branch
         run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
@@ -43,11 +46,6 @@ jobs:
 
           echo "ACTIVE_CLUSTER: ${ACTIVE_CLUSTER}"
           echo "BRANCH: ${BRANCH}"
-
-
-
-    #   - name: Checkout
-    #     uses: actions/checkout@v3
 
     #   - name: Get active cluster
     #     id: yq
