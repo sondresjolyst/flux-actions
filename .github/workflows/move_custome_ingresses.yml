@@ -31,8 +31,8 @@ jobs:
 
           echo "Test"
 
-    # outputs:
-    #   ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
+    outputs:
+      ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
 
     # strategy:
     #   matrix:
