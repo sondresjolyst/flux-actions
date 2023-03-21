@@ -20,6 +20,9 @@ jobs:
       run:
         shell: bash
 
+    outputs:
+      ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
+
     steps:
       - name: CompareActiveCluster
         run: |
@@ -31,17 +34,9 @@ jobs:
 
           echo "Test"
 
-    outputs:
-      ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
-
-    # strategy:
-    #   matrix:
-    #     branches: ["${{ steps.setActiveClusterOutput.outputs.active_cluster }}", "master"]
-
-    # steps:
-    #   - name: Extract branch name
-    #     run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
-    #     id: extract_branch
+      # - name: Extract branch name
+      #   run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+      #   id: extract_branch
 
     #   - name: Checkout
     #     uses: actions/checkout@v3
@@ -59,8 +54,8 @@ jobs:
         # value=$(yq r database.yml test.database)`
         # echo "radix_environment=$(ls ${{ env.path }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
-  github-action-copy:
-    needs: customIngresses
-    uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
-    with:
-      ACTIVE_CLUSTER: ${{ needs.customIngresses.outputs.ACTIVE_CLUSTER }}
+  # github-action-copy:
+  #   needs: customIngresses
+  #   uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
+  #   with:
+  #     ACTIVE_CLUSTER: ${{ needs.customIngresses.outputs.ACTIVE_CLUSTER }}
