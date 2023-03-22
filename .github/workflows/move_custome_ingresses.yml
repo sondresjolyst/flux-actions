@@ -38,7 +38,8 @@ jobs:
             tar xz && sudo mv ${BINARY} /usr/bin/yq
 
           ### Start
-          echo "DEST_CLUSTER=$(yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' < ${{ env.postBuild }}) >> $GITHUB_OUTPUT
+          DEST_CLUSTER_tmp=$(yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' < ${{ env.postBuild }})
+          echo "DEST_CLUSTER=$(echo ${DEST_CLUSTER_tmp}) >> $GITHUB_OUTPUT
 
   github-action-copy:
     needs: getActiveCluster
