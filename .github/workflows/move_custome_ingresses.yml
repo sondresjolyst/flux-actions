@@ -9,59 +9,39 @@ on:
   pull_request:
   
 jobs:
-  customIngresses:
-    name: Custom ingresses
+  getActiveCluster:
+    name: Get active cluster
     runs-on: ubuntu-22.04
-
-    env:
-      postBuild: clusters/development/postBuild.yml
 
     defaults:
       run:
         shell: bash
 
+    env:
+      postBuild: clusters/development/postBuild.yml
+
     outputs:
-      ACTIVE_CLUSTER: ${{ steps.setActiveClusterOutput.outputs.active_cluster }}
+      DEST_CLUSTER: ${{ steps.getActiveCluster.outputs.DEST_CLUSTER }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Extract branch name
-        id: extract_branch
-        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
       
-      - name: CompareActiveCluster
+      - name: getActiveCluster
+        id: getActiveCluster
         run: |
+          ### Download yq
           BINARY="yq_linux_amd64"
           VERSION="v4.32.2"
           
           wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY}.tar.gz -O - |\
             tar xz && sudo mv ${BINARY} /usr/bin/yq
 
-          yq --help
+          ### Start
+          echo "DEST_CLUSTER=$(yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' < ${{ env.postBuild }}) >> $GITHUB_OUTPUT
 
-          ACTIVE_CLUSTER=$(yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' < ${{ env.postBuild }})
-          BRANCH=${{ steps.extract_branch.outputs.branch }}
-
-          echo "ACTIVE_CLUSTER: ${ACTIVE_CLUSTER}"
-          echo "BRANCH: ${BRANCH}"
-
-    #   - name: Get active cluster
-    #     id: yq
-    #     uses: mikefarah/yq@master
-    #     with:
-    #       cmd: yq '.spec.postBuild.substitute.ACTIVE_CLUSTER' ${{ env.postBuild }}
-
-    #   - name: Set active cluster output
-    #     id: setActiveClusterOutput
-    #     run: echo "active_cluster=${{ steps.yq.outputs.result }}" >> $GITHUB_OUTPUT
-        
-        # value=$(yq r database.yml test.database)`
-        # echo "radix_environment=$(ls ${{ env.path }} | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
-
-  # github-action-copy:
-  #   needs: customIngresses
-  #   uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
-  #   with:
-  #     ACTIVE_CLUSTER: ${{ needs.customIngresses.outputs.ACTIVE_CLUSTER }}
+  github-action-copy:
+    needs: getActiveCluster
+    uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
+    with:
+      DEST_CLUSTER: ${{ needs.getActiveCluster.outputs.DEST_CLUSTER }}
