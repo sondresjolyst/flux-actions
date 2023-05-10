@@ -5,8 +5,6 @@ on:
       - 'master'
     paths:
       - 'clusters/development/postBuild.yml'
-  workflow_dispatch:
-  pull_request:
 
 permissions:
   id-token: write
@@ -46,7 +44,7 @@ jobs:
 
   github-action-copy:
     needs: getActiveCluster
-    uses: sondresjolyst/github-action-copy/.github/workflows/move_custom_ingresses.yml@master
+    uses: equinor/radix-platform/.github/workflows/move_custom_ingresses.yml@master
     with:
       DEST_CLUSTER: ${{ needs.getActiveCluster.outputs.DEST_CLUSTER }}
       environment: operations
