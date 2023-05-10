@@ -26,6 +26,8 @@ on:
           - 'production'
           - 'c2-production'
 
+permissions: write-all
+
 jobs:
   check-version:
     name: Check for new versions
