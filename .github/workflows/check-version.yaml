@@ -41,7 +41,7 @@ jobs:
         run: |
           PR_BRANCH_TEMP="automatic-version-update"
           PR_NAME_TEMP="Automatic Pull Request"
-          destinationCluster=${{ inputs.destinationCluster }}
+          destinationCluster="${{ inputs.destinationCluster }}"
 
           if [ -n $destinationCluster ]; then
             echo "PR_BRANCH=${PR_BRANCH_TEMP}-${destinationCluster}" >> $GITHUB_ENV
