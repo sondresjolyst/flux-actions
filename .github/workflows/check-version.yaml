@@ -15,16 +15,16 @@ on:
           - 'playground'
           - 'production'
           - 'c2-production'
-      # destinationCluster:
-      #   description: 'Destination cluster'
-      #   required: false
-      #   type: choice
-      #   options:
-      #     - 'development'
-      #     - 'monitoring'
-      #     - 'playground'
-      #     - 'production'
-      #     - 'c2-production'
+      destinationCluster:
+        description: 'Destination cluster'
+        required: false
+        type: choice
+        options:
+          - 'development'
+          - 'monitoring'
+          - 'playground'
+          - 'production'
+          - 'c2-production'
 
 permissions: write-all
 
